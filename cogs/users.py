@@ -6,11 +6,9 @@ class UsersCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.command()
     async def echo(self, ctx: discord.ext.commands.Context, args):
         await ctx.send(content=args)
-
 
     @commands.command()
     async def iam(self, ctx: discord.ext.commands.Context, *args):
@@ -29,6 +27,11 @@ class UsersCog(commands.Cog):
             await ctx.message.add_reaction("👍")
         else:
             await ctx.message.add_reaction("👎")
+
+    @commands.command()
+    @commands.is_owner()
+    async def shutdown(self, ctx: discord.ext.commands.Context):
+        await ctx.bot.close()
 
 
 async def setup(bot):
