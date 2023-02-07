@@ -1,11 +1,7 @@
 import configparser
-import os
-
-import aiohttp
 import discord
 from discord.ext import tasks, commands
 import datetime
-import database
 import jlc
 
 CONFIG = configparser.ConfigParser()
@@ -22,7 +18,8 @@ class MyBot(commands.Bot):
         intents.message_content = True
         super().__init__(command_prefix=CONFIG["discord"]["prefix"], intents=intents)
         self.initial_extensions = [
-            'cogs.jlc'
+            'cogs.jlc',
+            'cogs.users'
         ]
 
     async def setup_hook(self):

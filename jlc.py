@@ -74,9 +74,12 @@ async def print_stock_data(component: Component, client: discord.Client):
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
 
-    channel = client.get_channel(component.channel_id)
-
     with database.Database() as db:
         db.update_component(data.stock, component.lcsc)
+
+    channel = client.get_channel(component.channel_id)
+
+    if component.stock == 0 and data.stock > 0 and component.role_id != 0:
+        await channel.send(content="<@&{}>".format(component.role_id))
 
     await channel.send(embed=embed)
