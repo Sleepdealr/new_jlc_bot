@@ -20,7 +20,7 @@ class MyBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=CONFIG["discord"]["prefix"], intents=discord.Intents.default(), )
+        super().__init__(command_prefix=CONFIG["discord"]["prefix"], intents=intents)
         self.initial_extensions = [
             'cogs.jlc'
         ]

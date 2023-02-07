@@ -3,7 +3,6 @@ import datetime
 import aiohttp
 from dataclasses import dataclass
 import discord
-
 import database
 
 
@@ -75,7 +74,7 @@ async def print_stock_data(component: Component, client: discord.Client):
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
 
-    channel = client.get_channel(1072265723214303342)  # TODO: MAKE THIS THE CORRECT CHANNEL FROM DB
+    channel = client.get_channel(component.channel_id)
 
     with database.Database() as db:
         db.update_component(data.stock, component.lcsc)

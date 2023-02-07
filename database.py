@@ -25,8 +25,12 @@ class Database:
 
     def update_component(self, new_stock, lcsc):
         with self.__connection.cursor() as cursor:
-            cursor.execute("UPDATE components SET stock = {} WHERE lcsc={};".format(new_stock, lcsc))
+            cursor.execute("UPDATE components SET stock = {} WHERE lcsc = {};".format(new_stock, lcsc))
 
+    def add_component(self, name, lcsc, channel):
+        with self.__connection.cursor() as cursor:
+            cursor.execute("INSERT INTO components (name, lcsc, enabled, channel_id, stock, role_id)\
+             VALUES ('{}', '{}', {}, {}, {}, {})".format(name, lcsc, True, channel, 1, 0))
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read("jlc.conf")
