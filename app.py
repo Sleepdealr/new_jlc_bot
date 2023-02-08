@@ -2,6 +2,8 @@ import configparser
 import discord
 from discord.ext import tasks, commands
 import datetime
+
+import database
 import jlc
 
 CONFIG = configparser.ConfigParser()
@@ -39,6 +41,8 @@ class MyBot(commands.Bot):
         print('Ready!')
 
 
+
+
 bot = MyBot()
-# check_jlc.start()
+bot.pool = database.init()
 bot.run(CONFIG["discord"]["token"])
