@@ -1,13 +1,6 @@
 import jlc
 
 
-async def get_thingy(ctx):
-    async with ctx.bot.pool.acquire() as connection:
-        async with connection.transaction():
-            value = await connection.fetch('SELECT * FROM components', record_class=jlc.JLCRecord)
-            return value
-
-
 async def get_components(ctx):
     async with ctx.bot.pool.acquire() as connection:
         async with connection.transaction():
