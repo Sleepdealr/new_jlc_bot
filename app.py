@@ -1,9 +1,8 @@
 import configparser
+import asyncpg
 import discord
 from discord.ext import tasks, commands
 import datetime
-
-import database
 import jlc
 
 CONFIG = configparser.ConfigParser()
@@ -28,6 +27,7 @@ class MyBot(commands.Bot):
         self.check_jlc.start()
         for ext in self.initial_extensions:
             await self.load_extension(ext)
+        bot.pool = await asyncpg.create_pool(CONFIG["postgres"]["database_url"])
 
     async def close(self):
         await super().close()
@@ -41,8 +41,5 @@ class MyBot(commands.Bot):
         print('Ready!')
 
 
-
-
 bot = MyBot()
-bot.pool = database.init()
 bot.run(CONFIG["discord"]["token"])

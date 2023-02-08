@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-
 import database
 
 
@@ -38,6 +37,7 @@ class UsersCog(commands.Cog):
     @commands.command()
     async def testdb(self, ctx: discord.ext.commands.Context):
         print(await database.get_thingy(ctx))
+
 
 async def setup(bot):
     await bot.add_cog(UsersCog(bot))

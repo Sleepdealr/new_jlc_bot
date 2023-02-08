@@ -15,8 +15,7 @@ class JLCCog(commands.Cog):
 
     @commands.command()
     async def list_components(self, ctx):
-        with database.Database() as db:
-            components = db.get_components()
+        components = await database.get_components(ctx)
         message = ""
         for component in components:
             message += component.name
@@ -32,13 +31,12 @@ class JLCCog(commands.Cog):
         name = args[0]
         lcsc = args[1]
         channel = args[2]
-        with database.Database as db:
-            db.add_component(name, lcsc, channel)
+        await database.add_component(name, lcsc, channel)
 
 
     @commands.command()
     async def check(self, ctx: discord.ext.commands.Context):
-        await jlc.jlc_stock_routine(ctx.bot)
+        await jlc.jlc_stock_routine(ctx)
 
 
 async def setup(bot):

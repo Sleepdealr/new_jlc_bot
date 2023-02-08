@@ -2,8 +2,22 @@ import asyncio
 import datetime
 import aiohttp
 from dataclasses import dataclass
+import asyncpg
 import discord
 import database
+
+
+@dataclass(init=False)
+class JLCRecord(asyncpg.Record):
+    name: str
+    lcsc: str
+    enabled: bool
+    channel_id: int
+    stock: int
+    role_id: int = 0
+
+    def __getattr__(self, name):
+        return self[name]
 
 
 @dataclass
@@ -24,12 +38,11 @@ class ComponentData:
     basic: str
 
 
-async def jlc_stock_routine(client: discord.Client):
+async def jlc_stock_routine(ctx):
     statements = []
-    with database.Database() as db:
-        for component in db.get_components():
-            statements.append(print_stock_data(component, client))
-            # await jlc.print_stock_data(component, client)
+    for component in await database.get_components(ctx):
+        statements.append(print_stock_data(component, ctx))
+        # await jlc.print_stock_data(component, client)
     await asyncio.gather(*statements)
 
 
@@ -49,7 +62,7 @@ async def get_jlc_stock(lcsc: str) -> ComponentData:
     return ComponentData(jlc_stock, image_url, price, base)
 
 
-async def print_stock_data(component: Component, client: discord.Client):
+async def print_stock_data(component: Component, ctx):
     data = await get_jlc_stock(component.lcsc)
 
     stock_delta = component.stock - data.stock
@@ -74,10 +87,9 @@ async def print_stock_data(component: Component, client: discord.Client):
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
 
-    with database.Database() as db:
-        db.update_component(data.stock, component.lcsc)
+    await database.update_component(ctx, data.stock, component.lcsc)
 
-    channel = client.get_channel(component.channel_id)
+    channel = ctx.bot.get_channel(component.channel_id)
 
     if component.stock == 0 and data.stock > 0 and component.role_id != 0:
         await channel.send(content="<@&{}>".format(component.role_id))
