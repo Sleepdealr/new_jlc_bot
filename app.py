@@ -1,16 +1,10 @@
 import configparser
 import asyncpg
 import discord
-from discord.ext import tasks, commands
-import datetime
-import jlc
+from discord.ext import commands
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read("jlc.conf")
-
-# 10am EST to UTC
-utc = datetime.timezone.utc
-time = datetime.time(hour=15, tzinfo=utc)
 
 
 class MyBot(commands.Bot):
@@ -24,18 +18,12 @@ class MyBot(commands.Bot):
         ]
 
     async def setup_hook(self):
-        self.check_jlc.start()
         for ext in self.initial_extensions:
             await self.load_extension(ext)
         bot.pool = await asyncpg.create_pool(CONFIG["postgres"]["database_url"])
 
     async def close(self):
         await super().close()
-
-    @tasks.loop(time=time)
-    async def check_jlc(self):
-        # Background task, call daily discord check from here
-        await jlc.jlc_stock_routine(bot)
 
     async def on_ready(self):
         print('Ready!')

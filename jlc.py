@@ -4,6 +4,7 @@ import aiohttp
 from dataclasses import dataclass
 import asyncpg
 import discord
+from discord.ext import tasks, commands
 import database
 
 
@@ -38,10 +39,10 @@ class ComponentData:
     basic: str
 
 
-async def jlc_stock_routine(ctx):
+async def jlc_stock_routine(bot: discord.ext.commands.Bot):
     statements = []
-    for component in await database.get_components(ctx):
-        statements.append(print_stock_data(component, ctx))
+    for component in await database.get_components(bot):
+        statements.append(print_stock_data(component, bot))
         # await jlc.print_stock_data(component, client)
     await asyncio.gather(*statements)
 
@@ -62,7 +63,7 @@ async def get_jlc_stock(lcsc: str) -> ComponentData:
     return ComponentData(jlc_stock, image_url, price, base)
 
 
-async def print_stock_data(component: Component, ctx):
+async def print_stock_data(component: Component, bot):
     data = await get_jlc_stock(component.lcsc)
 
     stock_delta = component.stock - data.stock
@@ -87,11 +88,12 @@ async def print_stock_data(component: Component, ctx):
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
 
-    await database.update_component(ctx, data.stock, component.lcsc)
+    await database.update_component(bot, data.stock, component.lcsc)
 
-    channel = ctx.bot.get_channel(component.channel_id)
+    channel = bot.get_channel(component.channel_id)
 
     if component.stock == 0 and data.stock > 0 and component.role_id != 0:
         await channel.send(content="<@&{}>".format(component.role_id))
 
     await channel.send(embed=embed)
+
