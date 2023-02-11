@@ -86,6 +86,7 @@ async def print_stock_data(component: Component, bot):
     embed.add_field(name="Stock", value="{} ({}{})".format(data.stock, indicator, abs(stock_delta)),
                     inline=False)
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
+    embed.add_field(name="Price", value=data.price, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
 
     await database.update_component(bot, data.stock, component.lcsc)

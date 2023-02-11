@@ -8,10 +8,17 @@ async def get_components(bot):
             return value
 
 
+async def get_component(bot, lcsc):
+    async with bot.pool.acquire() as connection:
+        async with connection.transaction():
+            value = await connection.fetchrow('SELECT * FROM components WHERE lcsc = $1', lcsc, record_class=jlc.JLCRecord)
+            return value
+
+
 async def update_component(bot, new_stock, lcsc):
     async with bot.pool.acquire() as connection:
         async with connection.transaction():
-            connection.execute("UPDATE components SET stock = $1 WHERE lcsc = $2", new_stock, lcsc)
+            await connection.execute("UPDATE components SET stock = $1 WHERE lcsc = $2", new_stock, lcsc)
 
 
 async def add_component(bot, name, lcsc, channel):

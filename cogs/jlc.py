@@ -3,7 +3,6 @@ import discord
 from discord.ext import tasks, commands
 import database
 import jlc
-
 # 10am EST to UTC
 utc = datetime.timezone.utc
 time = datetime.time(hour=15, tzinfo=utc)
@@ -13,10 +12,6 @@ class JLCCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.check_jlc.start()
-
-    @commands.command()
-    async def test(self, ctx):
-        await ctx.send("This is a test")
 
     @commands.command()
     async def list_components(self, ctx):
@@ -44,8 +39,14 @@ class JLCCog(commands.Cog):
 
     @tasks.loop(time=time)
     async def check_jlc(self):
-        # Background task, call daily discord check from here
         await jlc.jlc_stock_routine(self.bot)
+
+    @commands.command()
+    async def testcomp(self, ctx, *args):
+        lcsc = args[0]
+        component = await database.get_component(self.bot, lcsc)
+        await jlc.print_stock_data(component, self.bot)
+        # Background task, call daily discord check from here
 
 
 async def setup(bot: discord.ext.commands.Bot):
