@@ -1,6 +1,6 @@
+import sys
 import discord
 from discord.ext import commands
-import database
 
 
 class UsersCog(commands.Cog):

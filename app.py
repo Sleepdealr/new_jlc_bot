@@ -31,3 +31,4 @@ class MyBot(commands.Bot):
 
 bot = MyBot()
 bot.run(CONFIG["discord"]["token"])
+exit(1) # Only triggered after logout
