@@ -3,6 +3,20 @@ from dataclasses import dataclass
 import psycopg
 from psycopg.rows import class_row
 import jlc
+import asyncpg
+
+@dataclass
+class JLCComponent(asyncpg.Record):
+    name: str
+    lcsc: str
+    enabled: bool
+    channel_id: int
+    stock: int
+    role_id: int = 0
+
+    def __getattr__(self, name):
+        return self[name]
+
 
 @dataclass
 class Database:

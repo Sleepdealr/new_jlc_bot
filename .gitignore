@@ -1,2 +1,11 @@
 .venv
+venv
+
 jlc.conf
+docker-compose.yaml
+Dockerfile
+!example/*
+
+postgres-data
+__pycache__
+.DS_Store

@@ -36,9 +36,11 @@ class MyBot(commands.Bot):
         await jlc.jlc_stock_routine(bot)
 
     async def on_ready(self):
-        print('Ready!')
+        self.launch_time = datetime.datetime.utcnow()
+        print(f'{self} has been loaded')
 
 
 bot = MyBot()
 # check_jlc.start()
+
 bot.run(CONFIG["discord"]["token"])
