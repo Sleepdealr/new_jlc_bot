@@ -64,7 +64,7 @@ async def print_stock_data(component: Component, client: discord.Client):
         color = discord.Color.green()
         # color = discord.Color.from_rgb(000, 000, 256)
 
-    embed = discord.Embed(title=component.name, description="Desc", color=color,
+    embed = discord.Embed(title=component.name, color=color,
                           url="https://jlcpcb.com/parts/componentSearch?isSearch=true&searchTxt={}".format(
                               component.lcsc))
     embed.set_thumbnail(url=data.image_url)
@@ -73,6 +73,7 @@ async def print_stock_data(component: Component, client: discord.Client):
                     inline=False)
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
+    embed.add_field(name="Price", value="{}".format(component.price), inline=False)
 
     with database.Database() as db:
         db.update_component(data.stock, component.lcsc)
