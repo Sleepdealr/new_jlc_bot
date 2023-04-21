@@ -73,7 +73,7 @@ async def print_stock_data(component: Component, client: discord.Client):
                     inline=False)
     embed.add_field(name="Previous Stock", value=component.stock, inline=False)
     embed.add_field(name="LCSC Number", value="{}\n{}".format(component.lcsc, data.basic), inline=False)
-    embed.add_field(name="Price", value="{}".format(component.price), inline=False)
+    embed.add_field(name="Price", value="{}".format(data.price), inline=False)
 
     with database.Database() as db:
         db.update_component(data.stock, component.lcsc)
